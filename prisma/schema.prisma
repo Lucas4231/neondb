@@ -7,44 +7,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model clientes {
-  codcli    Int       @id @default(autoincrement())
-  nome      String    @db.VarChar(45)
-  email     String    @db.VarChar(45)
-  uf        String    @db.VarChar(45)
-  password  String    @db.VarChar(45)
-  level     Int
-  createdat DateTime? @default(now()) @db.Timestamp(6)
-  compras   compras[]
-}
-
-model compras {
-  codcomp  Int      @id @default(autoincrement())
-  codcli   Int
-  codpro   Int
-  qtda     Int?
-  preco    Decimal? @db.Decimal(10, 2)
-  datacomp DateTime @default(now()) @db.Timestamp(6)
-  clientes clientes @relation(fields: [codcli], references: [codcli], onDelete: NoAction, onUpdate: NoAction, map: "fk_clientes_has_produtos_clientes")
-  produtos produtos @relation(fields: [codpro], references: [cod], onDelete: NoAction, onUpdate: NoAction, map: "fk_clientes_has_produtos_produtos1")
-}
-
-model produtos {
-  cod        Int       @id @default(autoincrement())
-  nome       String    @db.VarChar(225)
-  descri     String?
-  fabricante String?   @db.VarChar(225)
-  qtda       Int?
-  preco      Decimal?  @db.Decimal(10, 2)
-  custo      Decimal?  @db.Decimal(10, 2)
-  data       DateTime? @default(now()) @db.Timestamp(6)
-  compras    compras[]
-}
-
 model usuario {
   cod_usuario Int       @id @default(autoincrement())
   nome        String    @db.VarChar(255)
-  email       String    @db.VarChar(45)
+  email       String    @unique @db.VarChar(45)
   password    String    @db.VarChar(100)
   level       Int
   createdat   DateTime? @default(now()) @db.Timestamp(6)
