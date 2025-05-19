@@ -31,10 +31,31 @@ router.get('/ping', (req, res) => {
 router.get('/test-cloudinary', async (req, res) => {
     try {
         const { cloudinary } = require('./config/cloudinary');
+        console.log('Tentando conectar ao Cloudinary...');
+        console.log('Configuração:', {
+            cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+            api_key: process.env.CLOUDINARY_API_KEY ? 'Configurado' : 'Não configurado',
+            api_secret: process.env.CLOUDINARY_API_SECRET ? 'Configurado' : 'Não configurado'
+        });
+        
         const result = await cloudinary.api.ping();
-        res.json({ message: 'Cloudinary está funcionando!', result });
+        console.log('Resposta do Cloudinary:', result);
+        res.json({ 
+            message: 'Cloudinary está funcionando!', 
+            result,
+            config: {
+                cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+                api_key: process.env.CLOUDINARY_API_KEY ? 'Configurado' : 'Não configurado',
+                api_secret: process.env.CLOUDINARY_API_SECRET ? 'Configurado' : 'Não configurado'
+            }
+        });
     } catch (error) {
-        res.status(500).json({ error: 'Erro ao conectar com Cloudinary', details: error.message });
+        console.error('Erro detalhado:', error);
+        res.status(500).json({ 
+            error: 'Erro ao conectar com Cloudinary', 
+            details: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 });
 
