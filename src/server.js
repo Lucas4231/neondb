@@ -8,7 +8,7 @@ const app = express();
 // Configuração do CORS
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
-        ? ['https://cidadeemfoco.vercel.app', 'exp://192.168.1.7:19000', 'exp://localhost:19000'] 
+        ? ['https://cidadeemfoco.vercel.app', 'exp://192.168.1.7:19000'] 
         : '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
