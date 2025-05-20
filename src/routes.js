@@ -13,6 +13,7 @@ router.post('/auth/login', UserController.authenticate);
 // Rotas de usuário (protegidas)
 router.get('/user/me', authMiddleware, UserController.getCurrentUser);
 router.put('/user/profile', authMiddleware, UserController.update);
+router.put('/user/profile-image', authMiddleware, UserController.updateProfileImage);
 
 // Rotas de administrador
 router.get('/admin/users', [authMiddleware, adminMiddleware], UserController.listAll);

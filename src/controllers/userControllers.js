@@ -217,6 +217,33 @@ class UserController {
             return res.status(500).json({ mensagem: 'Erro ao deletar usuário' });
         }
     }
+
+    // Atualizar foto do perfil
+    async updateProfileImage(req, res) {
+        try {
+            const userId = req.user.idUser;
+            const { imageUrl } = req.body;
+
+            if (!imageUrl) {
+                return res.status(400).json({ mensagem: 'URL da imagem é obrigatória' });
+            }
+
+            const updatedUser = await prisma.usuario.update({
+                where: { cod_usuario: userId },
+                data: {
+                    profileImage: imageUrl
+                }
+            });
+
+            // Remove a senha do objeto retornado
+            const { password: _, ...userWithoutPassword } = updatedUser;
+
+            return res.json(userWithoutPassword);
+        } catch (error) {
+            console.error('Erro ao atualizar foto do perfil:', error);
+            return res.status(500).json({ mensagem: 'Erro ao atualizar foto do perfil' });
+        }
+    }
 }
 
 module.exports = new UserController();
