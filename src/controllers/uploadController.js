@@ -6,9 +6,10 @@ const uploadImage = async (req, res) => {
             return res.status(400).json({ error: 'Nenhuma imagem foi enviada' });
         }
 
-        // Retorna a URL da imagem e outras informações
+        // Retorna a URL completa da imagem e outras informações
         res.json({
             url: req.file.path,
+            secure_url: req.file.path.replace('http://', 'https://'),
             public_id: req.file.filename
         });
     } catch (error) {

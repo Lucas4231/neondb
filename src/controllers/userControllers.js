@@ -227,12 +227,16 @@ class UserController {
                 return res.status(400).json({ mensagem: 'URL da imagem é obrigatória' });
             }
 
+            console.log('Atualizando imagem de perfil:', { userId, imageUrl });
+
             const updatedUser = await prisma.usuario.update({
                 where: { cod_usuario: userId },
                 data: {
                     profileImage: imageUrl
                 }
             });
+
+            console.log('Usuário atualizado:', updatedUser);
 
             // Remove a senha do objeto retornado
             const { password: _, ...userWithoutPassword } = updatedUser;
