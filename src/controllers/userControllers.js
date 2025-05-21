@@ -113,7 +113,9 @@ class UserController {
     async update(req, res) {
         try {
             const userId = req.user.idUser;
-            const { nome, email, senhaAtual, novaSenha } = req.body;
+            const { nome, email, senhaAtual, novaSenha, profileImage } = req.body;
+
+            console.log('Dados recebidos para atualização:', { nome, email, profileImage });
 
             // Busca o usuário atual
             const user = await prisma.usuario.findUnique({
@@ -141,14 +143,29 @@ class UserController {
                 user.password = hashedPassword;
             }
 
+            // Prepara os dados para atualização
+            const updateData = {
+                nome: nome || user.nome,
+                email: email || user.email,
+                password: user.password
+            };
+
+            // Se houver uma nova imagem de perfil, inclui na atualização
+            if (profileImage) {
+                updateData.profileImage = profileImage;
+            }
+
+            console.log('Dados para atualização:', updateData);
+
             // Atualiza os dados do usuário
             const updatedUser = await prisma.usuario.update({
                 where: { cod_usuario: userId },
-                data: {
-                    nome: nome || user.nome,
-                    email: email || user.email,
-                    password: user.password
-                }
+                data: updateData
+            });
+
+            console.log('Usuário atualizado:', {
+                userId: updatedUser.cod_usuario,
+                profileImage: updatedUser.profileImage
             });
 
             // Remove a senha do objeto retornado
