@@ -223,8 +223,25 @@ class UserController {
             const userId = req.user.idUser;
             const { imageUrl } = req.body;
 
+            console.log('Recebendo requisição para atualizar imagem:', {
+                userId,
+                imageUrl,
+                body: req.body
+            });
+
             if (!imageUrl) {
+                console.log('URL da imagem não fornecida');
                 return res.status(400).json({ mensagem: 'URL da imagem é obrigatória' });
+            }
+
+            // Verifica se o usuário existe
+            const user = await prisma.usuario.findUnique({
+                where: { cod_usuario: userId }
+            });
+
+            if (!user) {
+                console.log('Usuário não encontrado:', userId);
+                return res.status(404).json({ mensagem: 'Usuário não encontrado' });
             }
 
             console.log('Atualizando imagem de perfil:', { userId, imageUrl });
@@ -236,14 +253,17 @@ class UserController {
                 }
             });
 
-            console.log('Usuário atualizado:', updatedUser);
+            console.log('Usuário atualizado com sucesso:', {
+                userId: updatedUser.cod_usuario,
+                profileImage: updatedUser.profileImage
+            });
 
             // Remove a senha do objeto retornado
             const { password: _, ...userWithoutPassword } = updatedUser;
 
             return res.json(userWithoutPassword);
         } catch (error) {
-            console.error('Erro ao atualizar foto do perfil:', error);
+            console.error('Erro detalhado ao atualizar foto do perfil:', error);
             return res.status(500).json({ mensagem: 'Erro ao atualizar foto do perfil' });
         }
     }
