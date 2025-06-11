@@ -1,3 +1,4 @@
 node_modules/
 
 .env*
+prisma/migrations/add_publicacoes_e_curtidas.sql

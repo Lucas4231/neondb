@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const UserController = require('./controllers/userControllers');
+const PublicacaoController = require('./controllers/publicacaoController');
 const authMiddleware = require('./middleware/authorization');
 const adminMiddleware = require('./middleware/adminAuthorization');
 const { upload } = require('./config/cloudinary');
@@ -14,6 +15,12 @@ router.post('/auth/login', UserController.authenticate);
 router.get('/user/me', authMiddleware, UserController.getCurrentUser);
 router.put('/user/profile', authMiddleware, UserController.update);
 router.put('/user/profile-image', authMiddleware, UserController.updateProfileImage);
+
+// Rotas de publicações (protegidas)
+router.post('/publicacoes', authMiddleware, upload.single('photo'), PublicacaoController.create);
+router.get('/publicacoes', authMiddleware, PublicacaoController.list);
+router.post('/publicacoes/:id/curtir', authMiddleware, PublicacaoController.curtir);
+router.post('/publicacoes/:id/descurtir', authMiddleware, PublicacaoController.descurtir);
 
 // Rotas de administrador
 router.get('/admin/users', [authMiddleware, adminMiddleware], UserController.listAll);
